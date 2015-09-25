@@ -5,3 +5,10 @@ This is my first "one page" project, which is kind of a personal challange for m
 
 ## About this cookbook
 The project is about a small Angular and Firebase based cookbook for personal use.
+
+## Features
+- :white_check_mark: List view (table)
+- :x: List view (image boxes)
+- :white_check_mark: Detailed view
+- :white_check_mark: Update view
+- :x: Cloudinary image upload
