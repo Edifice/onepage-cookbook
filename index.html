@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>Cookbook</title>
+        <meta name="description" content="Personal cookbook">
+        <meta name="author" content="Daniel Salamon <salidani+onepagecookbook@gmail.com>">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-MfvZlkHCEqatNoGiOXveE8FIwMzZg4W85qfrfIFBfYc= sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+        <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/yeti/bootstrap.min.css" rel="stylesheet" integrity="sha256-gJ9rCvTS5xodBImuaUYf1WfbdDKq54HCPz9wk8spvGs= sha512-weqt+X3kGDDAW9V32W7bWc6aSNCMGNQsdOpfJJz/qD/Yhp+kNeR+YyvvWojJ+afETB31L0C4eO0pcygxfTgjgw==" crossorigin="anonymous">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha256-k2/8zcNbxVIh5mnQ52A0r3a6jAgMGxFJFE2707UxGCk= sha512-ZV9KawG2Legkwp3nAlxLIVFudTauWuBpC10uEafMHYL0Sarrz5A7G79kXh5+5+woxQ5HM559XX2UZjMJ36Wplg==" crossorigin="anonymous">
+        <!--[if lt IE 9]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
+        <style type="text/css">
+        textarea {
+            resize: vertical;
+        }
+        
+        body {
+            padding-bottom: 60px;
+        }
+
+        </style>
+    </head>
+
+    <body>
+        <div class="container" ng-app="cookbook">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-content" aria-expanded="false">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#/">Receptkönyv</a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="navbar-content">
+                        <ul class="nav navbar-nav">
+                            <li><a href="#/update">Új recept</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <div class="row">
+                <div class="col-xs-12">
+                    <ng-view></ng-view>
+                </div>
+            </div>
+        </div>
+
+
+        <template id="home.html">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Keresés</h3>
+                </div>
+                <div class="panel-body">
+                    ...
+                </div>
+            </div>
+            <table class="table">
+                <tr>
+                    <th>Recept</th>
+                    <th>Kategória</th>
+                    <th>Elkészítés</th>
+                </tr>
+                <tr ng-repeat="recipe in recipes">
+                    <td><a ng-href="#/view/{{recipe.$id}}">{{recipe.title}}</a></td>
+                    <td>{{recipe.category}}</td>
+                    <td>{{recipe.time.preparation}} + {{recipe.time.cooking}} perc</td>
+                </tr>
+            </table>
+        </template>
+
+        <template id="view.html">
+            <div class="btn-toolbar">
+                <div class="btn-group">
+                    <a class="btn btn-primary" href="#/update/{{recipe.$id}}">Szerkesztés</a>
+                </div>
+            </div>
+
+            <h1>{{recipe.title}}</h1>
+            <p><span class="label label-info">{{recipe.category}}</span></p>
+            <p ng-if="recipe.time.preparation">Előkészítés: <b>{{recipe.time.preparation}}</b> perc</p>
+            <p ng-if="recipe.time.cooking">Sütés: <b>{{recipe.time.cooking}}</b> perc</p>
+            <div class="row">
+                <div class="col-xs-12 col-sm-4 col-lg-3">
+                    <h2>Hozzávalók</h2>
+                    <ul>
+                        <li ng-repeat="ingredient in recipe.ingredients track by $index">{{ingredient}}</li>
+                    </ul>
+                </div>
+                <div class="col-xs-12 col-sm-8 col-lg-9">
+                    <h2>Elkészítés</h2>
+                    <ol>
+                        <li ng-repeat="step in recipe.steps track by $index">{{step}}</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-6" ng-show="!!recipe.tips">
+                    <h2>Jó tanács</h2>
+                    <p ng-model="recipe.tips"></p>
+                </div>
+                <div class="col-xs-12 col-md-6" ng-show="!!recipe.comment">
+                    <h2>Egyéb tudnivalók</h2>
+                    <p ng-model="recipe.comment"></p>
+                </div>
+            </div>
+        </template>
+
+        <template id="update.html">
+            <form ng-submit="save()">
+                <div class="btn-toolbar">
+                    <div class="btn-group">
+                        <button class="btn btn-primary" type="submit">Mentés</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                        <div class="form-group">
+                            <label for="update-title">Étel neve</label>
+                            <input type="text" class="form-control" id="update-title" ng-model="recipe.title" required>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                        <div class="form-group">
+                            <label for="update-category">Kategória</label>
+                            <select type="text" class="form-control" id="update-category" ng-model="recipe.category" ng-options="category for category in categories">
+                                <option value="">-- nincs megadva --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-4">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label for="update-time-preparation">Előkészítés</label>
+                                    <input type="number" class="form-control" id="update-time-preparation" ng-model="recipe.time.preparation">
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label for="update-time-preparation">Sütés</label>
+                                    <input type="number" class="form-control" id="update-time-preparation" ng-model="recipe.time.cooking">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="update-reference">Referencia link</label>
+                            <input type="url" class="form-control" id="update-reference" ng-model="recipe.reference">
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Hozzávalók</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="input-group" ng-repeat="ingredient in recipe.ingredients track by $index" style="margin-bottom:10px">
+                                    <input type="text" class="form-control" placeholder="Új hozzávaló..." ng-model="recipe.ingredients[$index]">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-danger" type="button" ng-click="recipe.ingredients.splice($index,1)">-</button>
+                                    </span>
+                                </div>
+                                <button type="button" class="btn btn-success" ng-click="recipe.ingredients.push('')">Új hozzávaló</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Elkészítés</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="input-group" ng-repeat="step in recipe.steps track by $index" style="margin-bottom:10px">
+                                    <textarea class="form-control" placeholder="Új lépés..." ng-model="recipe.steps[$index]"></textarea>
+                                    <span class="input-group-btn" style="vertical-align: top">
+                                        <button class="btn btn-xs btn-danger" type="button" ng-click="recipe.steps.splice($index,1)">-</button>
+                                    </span>
+                                </div>
+                                <button type="button" class="btn btn-success" ng-click="recipe.steps.push('')">Új lépés</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="update-tips">Jó tanács</label>
+                            <textarea class="form-control" id="update-tips" ng-model="recipe.tips"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="update-comment">Egyéb tudnivalók</label>
+                            <textarea class="form-control" id="update-comment" ng-model="recipe.comment"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </template>
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.6/angular.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.6/angular-route.min.js"></script>
+        <!--script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.6/angular-cookies.min.js"></script-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.6/angular-animate.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha256-Sk3nkD6mLTMOF0EOpNtsIry+s1CsaqQC1rVLTAy+0yc= sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+        <script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+        <script src="https://cdn.firebase.com/libs/angularfire/1.1.2/angularfire.min.js"></script>
+
+        <script type="text/javascript" defer>
+        (function() {
+            var app = angular.module('cookbook', [
+                'ngRoute',
+                'firebase'
+            ]);
+            app.constant('config', {
+                firebase: {
+                    app: 'onepage-cookbook'
+                }
+            });
+
+            app.run(function($templateCache, $rootScope, config) {
+                $('template').each(function() {
+                    $templateCache.put(this.id, this.innerHTML);
+                })
+
+                $rootScope.firebaseRef = new Firebase('https://' + config.firebase.app + '.firebaseio.com/recipes');
+            })
+
+            app.config(function($routeProvider) {
+                $routeProvider
+                    .when('/', {
+                        templateUrl: 'home.html',
+                        controller: 'HomeCtrl'
+                    })
+                    .when('/view/:id', {
+                        templateUrl: 'view.html',
+                        controller: 'ViewCtrl'
+                    })
+                    .when('/update/:id', {
+                        templateUrl: 'update.html',
+                        controller: 'UpdateCtrl'
+                    })
+                    .otherwise({
+                        redirectTo: '/'
+                    });
+            });
+
+            app.controller('HomeCtrl', function($scope, $rootScope, $firebaseArray) {
+                $rootScope.recipes = $firebaseArray($rootScope.firebaseRef);
+            });
+
+            app.controller('ViewCtrl', function($firebaseObject, $scope, $rootScope, $location, $routeParams, config) {
+                $firebaseObject($rootScope.firebaseRef.child($routeParams.id)).$loaded(function(recipe) {
+                    $scope.recipe = recipe;
+                });
+            });
+
+            app.controller('UpdateCtrl', function(
+                $scope,
+                $firebaseArray,
+                $firebaseObject,
+                $location,
+                $rootScope,
+                $routeParams,
+                config
+            ) {
+                $scope.recipe = {
+                    title: '',
+                    category: null,
+                    time: {
+                        preparation: 0,
+                        cooking: 0
+                    },
+                    reference: '',
+                    tips: '',
+                    comment: '',
+                    ingredients: [],
+                    steps: []
+                }
+
+                $scope.categories = ['Leves', 'Húsétel', 'Tészta féle', 'Saláta', 'Köret', 'Desszert']
+
+                if ($routeParams.id) {
+                    try {
+                        $firebaseObject($rootScope.firebaseRef.child($routeParams.id)).$loaded(function(recipe) {
+                            if (recipe.ingredients === undefined) {
+                                recipe.ingredients = [];
+                            }
+                            $scope.recipe = recipe;
+                        });
+                    } catch (e) {
+                        console.error(e);
+                        $location.path('/');
+                    }
+                }
+
+                $scope.save = function() {
+                    if ($scope.recipe.$id === undefined) {
+                        $firebaseArray($rootScope.firebaseRef).$add($scope.recipe);
+                    } else {
+                        $scope.recipe.$save();
+                    }
+                    $location.path('/view/' + $scope.recipe.$id);
+                }
+            });
+        })();
+
+        </script>
+    </body>
+
+</html>
+
