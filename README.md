@@ -12,3 +12,6 @@ The project is about a small Angular and Firebase based cookbook for personal us
 - :white_check_mark: Detailed view
 - :white_check_mark: Update view
 - :x: Cloudinary image upload
+- :x: Dynamic categories
+- :x: i18n support + language info
+- :x: authentication -> own recipebook for each user + shared recipes
