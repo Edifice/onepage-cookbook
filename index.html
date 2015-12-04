@@ -57,6 +57,16 @@
 
 
         <template id="home.html">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="btn-group">
+                        <button class="btn" ng-class="{true: 'btn-primary', false: 'btn-default'}[view === 'table']" ng-click="view = 'table'">Table view</button>
+                        <button class="btn" ng-class="{true: 'btn-primary', false: 'btn-default'}[view === 'grid']" ng-click="view = 'grid'">Grid view</button>
+                    </div>
+                </div>
+            </div>
+            <br>
+
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">Keresés</h3>
@@ -65,7 +75,7 @@
                     ...
                 </div>
             </div>
-            <table class="table">
+            <table class="table" ng-show="view === 'table'">
                 <tr>
                     <th>Recept</th>
                     <th>Kategória</th>
@@ -77,6 +87,13 @@
                     <td>{{recipe.time.preparation}} + {{recipe.time.cooking}} perc</td>
                 </tr>
             </table>
+            <div class="row" ng-show="view === 'grid'">
+                <div ng-repeat="recipe in recipes">
+                    <p><a ng-href="#/view/{{recipe.$id}}">{{recipe.title}}</a></p>
+                    <p>{{recipe.category}}</p>
+                    <p>{{recipe.time.preparation}} + {{recipe.time.cooking}} perc</p>
+                </div>
+            </div>
         </template>
 
         <template id="view.html">
@@ -271,6 +288,7 @@
 
             app.controller('HomeCtrl', function($scope, $rootScope, $firebaseArray) {
                 $rootScope.recipes = $firebaseArray($rootScope.firebaseRef);
+                $scope.view = 'table';
             });
 
             app.controller('ViewCtrl', function($firebaseObject, $scope, $rootScope, $location, $routeParams, config) {
