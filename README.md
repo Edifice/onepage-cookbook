@@ -15,3 +15,8 @@ The project is about a small Angular and Firebase based cookbook for personal us
 - :x: Dynamic categories
 - :x: i18n support + language info
 - :x: authentication -> own recipebook for each user + shared recipes
+- :x: Allergy markers
+- :x: unit conversion
+- :x: ingedient multiplier (wher you can set how many meals you want to cook)
+- :x: A nice logo
+- :x: Loading screen
