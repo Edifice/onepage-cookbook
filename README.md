@@ -9,6 +9,7 @@ The project is about a small Angular and Firebase based cookbook for personal us
 ## Features
 - :white_check_mark: List view (table)
 - :x: List view (image boxes)
+- :x: Search
 - :white_check_mark: Detailed view
 - :white_check_mark: Update view
 - :x: Cloudinary image upload
